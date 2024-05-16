@@ -1,0 +1,36 @@
+{
+    "books": [
+        {
+            "isbn":"9781593279509",
+            "title":"Eloquent JavaScript, Third Edition",
+            "author":"Marijn Haverbeke",
+            "published":"2018-12-04T00:00:00.000Z",
+            "publisher":"No Starch Press",
+            "pages":472
+        },
+        {
+            "isbn":"9781491943533",
+            "title":"Practical Modern JavaScript",
+            "author":"Nicolás Bevacqua",
+            "published":"2017-07-16T00:00:00.000Z",
+            "publisher":"O'Reilly Media",
+            "pages":334
+        },
+        {
+            "isbn":"9781593277574",
+            "title":"Understanding ECMAScript 6",
+            "author":"Nicholas C. Zakas",
+            "published":"2016-09-03T00:00:00.000Z",
+            "publisher":"No Starch Press",
+            "pages":352
+        },
+        {
+            "isbn":"9781449365035",
+            "title":"Speaking JavaScript",
+            "author":"Axel Rauschmayer",
+            "published":"2014-04-08T00:00:00.000Z",
+            "publisher":"O'Reilly Media",
+            "pages":460
+        }
+    ]
+}
