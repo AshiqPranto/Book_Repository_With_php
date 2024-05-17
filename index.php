@@ -11,6 +11,7 @@ $booksArray = json_decode($jsonString, true);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Books Form</title>
 </head>
 <style>
@@ -23,25 +24,29 @@ $booksArray = json_decode($jsonString, true);
 </style>
 <body>
     <h2>Books Form</h2>
-    <button type="button" onclick="addBook()">Add Book</button>
-    <button type="button" onclick="searchBook()">Search Book</button>
-    <table >
-        <tr>
-            <th>Title</th>
-            <th>ISBN</th>
-            <th>Author</th>
-            <th>Pages</th>
-        </tr>
+    <div class="flex justify-center">
+        <button class="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-full mx-5 my-5" type="button" onclick="addBook()">Add Book</button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-5 my-5" type="button" onclick="searchBook()">Search Book</button>
+    </div>
+    <table class="table-auto mx-auto w-f">
+       <thead>
+           <tr>
+               <th class="bg-teal-300 w-1/4">Title</th>
+               <th class="bg-teal-300 w-1/4">ISBN</th>
+               <th class="bg-teal-300 w-1/4">Author</th>
+               <th class="bg-teal-300 w-1/7">Pages</th>
+           </tr>
+       </thead>
         <?php foreach ($booksArray['books'] as $index => $book): ?>
                 <tr>
-                    <td><?php echo $booksArray['books'][$index]['title']?></td>
-                    <td><?php echo $booksArray['books'][$index]['isbn']?></td>
-                    <td><?php echo $booksArray['books'][$index]['author']?></td>
-                    <td><?php echo $booksArray['books'][$index]['pages']?></td>
-                    <td>
-                        <button type="button" onclick="redirectToUpdatePage(<?php echo $index;?>)">Update</button>
+                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['title']?></td>
+                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['isbn']?></td>
+                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['author']?></td>
+                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['pages']?></td>
+                    <td class="bg-slate-300">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="redirectToUpdatePage(<?php echo $index;?>)">Update</button>
                     </td>
-                    <td><button type="button" onclick="deleteBook(<?php echo $index;?>)">Delete</button></td>
+                    <td class="bg-slate-300"><button class="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="deleteBook(<?php echo $index;?>)">Delete</button></td>
                 </tr>
         <?php endforeach; ?>
 
