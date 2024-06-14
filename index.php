@@ -5,6 +5,19 @@ $looking = isset($_GET['title']) || isset($_GET['author']);
 $jsonString = file_get_contents('books_repo.json');
 $booksArray = json_decode($jsonString, true);
 
+// Autoloader
+function autoloader($classname) {
+    $lastSlash = strpos($classname, '\\') + 1;
+    $classname = substr($classname, $lastSlash);
+    $directory = $classname;
+    // $directory = str_replace('\\', '/', $classname);
+    $filename = __DIR__ . '\src'. '\\' . $directory . '.php';
+    // echo "\nFile name = ", $filename, "\n";
+    require_once($filename);
+}
+// echo __DIR__;
+spl_autoload_register('autoloader');
+
 ?>
 
 <!DOCTYPE html>
@@ -53,6 +66,21 @@ $booksArray = json_decode($jsonString, true);
         <!-- <input type="submit" value="Submit"> -->
     </table>
 </body>
+
+<?php
+use src\Utils\Config;
+
+$dbConfig = Config::getInstance()->get('db');
+// echo $dbConfig['password']
+var_dump($dbConfig);
+$db = new PDO(
+    'mysql:host=127.0.0.1;dbname=bookstore',
+    $dbConfig['user'],
+    $dbConfig['password']
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+?>
+
 <script>
     function searchBook(){
         window.location.href = "search_book.php";
@@ -88,27 +116,6 @@ $booksArray = json_decode($jsonString, true);
             };
             xhr.send("index=" + index);
         }
-    //     if (confirm('Are you sure you want to delete this book?')) {
-    //         print(index)
-    //         // Send AJAX request to delete book from server-side array
-    //         // Alternatively, update $booksArray in PHP and refresh the page
-    //         <?php
-    //         echo "index: " . $index;
-    //         // Assuming $booksArray is a PHP variable that holds the book data
-    //         // Remove book from the array using array_splice
-    //         print_r($booksArray['books']);
-    //         array_splice($booksArray['books'], $index, 1);
-    //         print_r($booksArray['books']);
-            
-    //         // file_put_contents("books_repo.json", json_encode($booksArray, JSON_PRETTY_PRINT));
-    //         // header('Location: ');
-
-    //         // Update HTML table by removing the corresponding row
-    //         // For example:
-    //         ?>
-    //         // document.querySelector('table tr:nth-child(' + (index + 1) + ')').remove();
-
-    //     }
     }
 </script>
 </html>
