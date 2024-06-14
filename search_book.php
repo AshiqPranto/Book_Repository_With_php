@@ -1,3 +1,35 @@
+<?php
+// Autoloader
+function autoloader($classname) {
+    $lastSlash = strpos($classname, '\\') + 1;
+    $classname = substr($classname, $lastSlash);
+    $directory = $classname;
+    // $directory = str_replace('\\', '/', $classname);
+    $filename = __DIR__ . '\src'. '\\' . $directory . '.php';
+    // echo "\nFile name = ", $filename, "\n";
+    require_once($filename);
+}
+// echo __DIR__;
+spl_autoload_register('autoloader');
+
+
+use src\Utils\Config;
+// require 'Books_Home_page.html';
+
+$dbConfig = Config::getInstance()->get('db');
+// echo $dbConfig['password']
+// var_dump($dbConfig);
+$db = new PDO(
+    'mysql:host=127.0.0.1;dbname=bookstore',
+    $dbConfig['user'],
+    $dbConfig['password']
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+$booksArray = $db->query('SELECT * FROM books'); // return a pdostatement
+$booksArray = $booksArray->fetchAll(); // convert pdostatement to associative array
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +53,7 @@
             <option value="title" <?php if(isset($_POST['searchField']) && $_POST['searchField'] === 'title') echo 'selected'; ?>>Title</option>
             <option value="isbn" <?php if(isset($_POST['searchField']) && $_POST['searchField'] === 'isbn') echo 'selected'; ?>>ISBN</option>
             <option value="author" <?php if(isset($_POST['searchField']) && $_POST['searchField'] === 'author') echo 'selected'; ?>>Author</option>
-            <option value="pages" <?php if(isset($_POST['searchField']) && $_POST['searchField'] === 'pages') echo 'selected'; ?>>Pages</option>
+            <option value="price" <?php if(isset($_POST['searchField']) && $_POST['searchField'] === 'price') echo 'selected'; ?>>Price</option>
         </select>
 
         <label for="searchValue">Search Value:</label>
@@ -39,11 +71,11 @@
         $searchValue = $_POST['searchValue'];
 
         // Load book data from JSON file
-        $jsonString = file_get_contents('books_repo.json');
-        $booksArray = json_decode($jsonString, true);
+        // $jsonString = file_get_contents('books_repo.json');
+        // $booksArray = json_decode($jsonString, true);
 
         // Filter books based on search criteria
-        $filteredBooks = array_filter($booksArray['books'], function($book) use ($searchField, $searchValue) {
+        $filteredBooks = array_filter($booksArray, function($book) use ($searchField, $searchValue) {
             // Convert search value to lowercase for case-insensitive comparison
             $searchValue = strtolower($searchValue);
 
@@ -58,13 +90,13 @@
         if (!empty($filteredBooks)) {
             echo '<h3>Search Results:</h3>';
             echo '<table border="1">';
-            echo '<tr><th>Title</th><th>ISBN</th><th>Author</th><th>Pages</th></tr>';
+            echo '<tr><th>Title</th><th>ISBN</th><th>Author</th><th>Price</th></tr>';
             foreach ($filteredBooks as $book) {
                 echo '<tr>';
                 echo '<td>' . $book['title'] . '</td>';
                 echo '<td>' . $book['isbn'] . '</td>';
                 echo '<td>' . $book['author'] . '</td>';
-                echo '<td>' . $book['pages'] . '</td>';
+                echo '<td>' . $book['price'] . '</td>';
                 echo '</tr>';
             }
             echo '</table>';
