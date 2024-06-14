@@ -1,10 +1,4 @@
 <?php
-$looking = isset($_GET['title']) || isset($_GET['author']);
-// require 'Books_Home_page.html';
-
-$jsonString = file_get_contents('books_repo.json');
-$booksArray = json_decode($jsonString, true);
-
 // Autoloader
 function autoloader($classname) {
     $lastSlash = strpos($classname, '\\') + 1;
@@ -18,6 +12,26 @@ function autoloader($classname) {
 // echo __DIR__;
 spl_autoload_register('autoloader');
 
+$looking = isset($_GET['title']) || isset($_GET['author']);
+
+use src\Utils\Config;
+// require 'Books_Home_page.html';
+
+$dbConfig = Config::getInstance()->get('db');
+// echo $dbConfig['password']
+// var_dump($dbConfig);
+$db = new PDO(
+    'mysql:host=127.0.0.1;dbname=bookstore',
+    $dbConfig['user'],
+    $dbConfig['password']
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+$booksArray = $db->query('SELECT * FROM books');
+// foreach($booksArray as $book){
+//     print_r($book);
+//     // echo "\n";
+// }
 ?>
 
 <!DOCTYPE html>
@@ -47,39 +61,25 @@ spl_autoload_register('autoloader');
                <th class="bg-teal-300 w-1/4">Title</th>
                <th class="bg-teal-300 w-1/4">ISBN</th>
                <th class="bg-teal-300 w-1/4">Author</th>
-               <th class="bg-teal-300 w-1/7">Pages</th>
+               <th class="bg-teal-300 w-1/7">Price</th>
            </tr>
        </thead>
-        <?php foreach ($booksArray['books'] as $index => $book): ?>
-                <tr>
-                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['title']?></td>
-                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['isbn']?></td>
-                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['author']?></td>
-                    <td class="bg-slate-300"><?php echo $booksArray['books'][$index]['pages']?></td>
-                    <td class="bg-slate-300">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="redirectToUpdatePage(<?php echo $index;?>)">Update</button>
-                    </td>
-                    <td class="bg-slate-300"><button class="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="deleteBook(<?php echo $index;?>)">Delete</button></td>
-                </tr>
+        <?php foreach ($booksArray as $index => $book): ?>
+            <tr>
+                <td class="bg-slate-300"><?php echo $book['title']?></td>
+                <td class="bg-slate-300"><?php echo $book['isbn']?></td>
+                <td class="bg-slate-300"><?php echo $book['author']?></td>
+                <td class="bg-slate-300"><?php echo $book['price']?></td>
+                <td class="bg-slate-300">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="redirectToUpdatePage(<?php echo $index;?>)">Update</button>
+                </td>
+                <td class="bg-slate-300"><button class="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded-full" type="button" onclick="deleteBook(<?php echo $index;?>)">Delete</button></td>
+            </tr>
         <?php endforeach; ?>
 
         <!-- <input type="submit" value="Submit"> -->
     </table>
 </body>
-
-<?php
-use src\Utils\Config;
-
-$dbConfig = Config::getInstance()->get('db');
-// echo $dbConfig['password']
-var_dump($dbConfig);
-$db = new PDO(
-    'mysql:host=127.0.0.1;dbname=bookstore',
-    $dbConfig['user'],
-    $dbConfig['password']
-);
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-?>
 
 <script>
     function searchBook(){
@@ -93,7 +93,6 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         console.log(index);
         
         window.location.href = "update_book.php?index=" + index;
-
     }
 
     function deleteBook(index) {

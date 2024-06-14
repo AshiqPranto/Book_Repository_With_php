@@ -34,8 +34,7 @@ class Config {
     }
 
     public function get($key) {
-        echo $key;
-        // echo $this->data[key];
+        // echo $key;
         if (!isset($this->data[$key])) {
             throw new NotFoundException("Key $key not in config.");
         }
